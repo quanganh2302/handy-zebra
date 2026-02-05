@@ -8,7 +8,7 @@ import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import com.example.civn26t01.R
 import com.example.civn26t01.core.constants.BundleKeys
-import com.example.civn26t01.data.MasterLabelData
+import com.example.civn26t01.data.models.MasterLabelData
 import com.example.civn26t01.databinding.FragmentCreateBoxLabelBinding
 import com.example.civn26t01.ui.utils.DateUiFormatter
 import java.time.LocalDate

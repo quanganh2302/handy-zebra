@@ -1,15 +1,27 @@
-package com.example.civn26t01.data
+package com.example.civn26t01.data.models
 
 import android.os.Parcel
 import android.os.Parcelable
 import com.example.civn26t01.domain.models.Box
+import com.google.gson.annotations.SerializedName
 
 data class ChiyodaInfo(
+    @SerializedName("wono")
     val wono: String = "",
+
+    @SerializedName("completedCount")
     val completedCount: Long = 0L,
+
+    @SerializedName("entryDate")
     val entryDate: String? = null,
+
+    @SerializedName("packingType")
     val packingType: Int = 0,
+
+    @SerializedName("wonoComplete")
     val wonoComplete: Boolean = false,
+
+    @SerializedName("listBox")
     val listBox: List<Box>? = null
 ) : Parcelable {
 

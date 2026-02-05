@@ -1,4 +1,4 @@
-package com.example.civn26t01.data
+package com.example.civn26t01.data.models
 
 data class MasterLabelData (
     val wono: String,

@@ -2,28 +2,22 @@ package com.example.civn26t01.domain.models
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.google.gson.annotations.SerializedName
 
 data class Box(
+    @SerializedName("numberBox")
+    var numberBox: Int = 0,
 
-    /** ID box (local / server) */
-    val id: Int = 0,
-
-    /** Số thứ tự box */
-    val numberBox: Int = 0,
-
-    /** Số lượng sản phẩm trong box */
-    var count: Long = 0L
-
+    @SerializedName("count")
+    var count: Long = 0
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
-        id = parcel.readInt(),
         numberBox = parcel.readInt(),
         count = parcel.readLong()
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeInt(id)
         parcel.writeInt(numberBox)
         parcel.writeLong(count)
     }

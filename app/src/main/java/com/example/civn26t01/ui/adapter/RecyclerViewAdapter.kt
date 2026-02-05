@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.civn26t01.R
-import com.example.civn26t01.data.PackingLabel
+import com.example.civn26t01.data.models.PackingLabel
 import com.example.civn26t01.ui.utils.DateUiFormatter
 
 class RecyclerViewAdapter(

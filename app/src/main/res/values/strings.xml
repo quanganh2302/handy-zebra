@@ -56,8 +56,8 @@
     // Create box label
     <string name="create_box_label" >Create box label </string>
     <string name="category">Category</string>
-    <string name="packing_type_1">Package</string>
-    <string name="packing_type_2">Carton Box</string>
+    <string name="packing_type_1">Carton Box</string>
+    <string name="packing_type_2">Package</string>
     <string name="packing_type_3">Plastic Bag</string>
     <string name="packing_type_4">Paper Pack</string>
     <string name="packing_type_5">Others</string>
@@ -128,4 +128,19 @@
     <string name="error_port_invalid">Port must be between 1 and 65535</string>
     <string name="settings_saved_success">Settings saved successfully</string>
     <string name="settings_reset_success">Settings reset to defaults</string>
+
+    <!-- API Messages -->
+    <string name="print_success">Task submitted successfully</string>
+    <string name="print_failed">Failed to submit task</string>
+    <string name="processing">Processing...</string>
+    <string name="task_submitted_message">Task submitted!\nJob ID: %1$s</string>
+
+    <!-- Errors -->
+    <string name="error_network">Network error. Please check your connection.</string>
+    <string name="error_bad_request">Invalid request data</string>
+    <string name="error_system_paused">RPA system is currently paused</string>
+    <string name="error_server">Server error: %1$d</string>
+    <string name="error_unexpected">Unexpected error: %1$s</string>
+    <string name="ok">OK</string>
+
 </resources>

@@ -1,4 +1,4 @@
-package com.example.civn26t01.data
+package com.example.civn26t01.data.models
 
 import com.example.civn26t01.core.constants.Common
 import java.io.Serializable

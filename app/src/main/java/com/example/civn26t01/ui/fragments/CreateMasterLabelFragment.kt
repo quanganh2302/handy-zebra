@@ -12,7 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.civn26t01.R
 import com.example.civn26t01.core.constants.BundleKeys
-import com.example.civn26t01.data.MasterLabelData
+import com.example.civn26t01.data.models.MasterLabelData
 import com.example.civn26t01.databinding.FragmentCreateMasterLabelBinding
 import com.example.civn26t01.core.scanner.ScanEvent
 import com.example.civn26t01.core.scanner.ScanViewModel
