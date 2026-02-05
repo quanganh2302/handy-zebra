@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Base Colors -->
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="transparent">#00000000</color>
+
+    <!-- Primary Colors -->
+    <color name="primary">#16A2F5</color>
+    <color name="light_primary">#16A2F5</color>
+    <color name="primary_dark">#0D7DC4</color>
+    <color name="primary_light">#66C0F7</color>
+
+    <!-- Background Colors -->
+    <color name="background">#FFFFFF</color>
+    <color name="background_secondary">#F5F5F5</color>
+    <color name="header_background">#000000</color>
+    <color name="surface">#FFFFFF</color>
+
+    <!-- Text Colors -->
+    <color name="text_primary">#000000</color>
+    <color name="text_secondary">#757575</color>
+    <color name="text_hint">#9E9E9E</color>
+    <color name="text_disabled">#BDBDBD</color>
+    <color name="text_on_primary">#FFFFFF</color>
+
+    <!-- Gray Scale -->
+    <color name="gray">#DDDDDD</color>
+    <color name="gray_light">#F5F5F5</color>
+    <color name="gray_medium">#BDBDBD</color>
+    <color name="gray_dark">#616161</color>
+
+    <!-- Status Colors -->
+    <color name="success">#4CAF50</color>
+    <color name="green">#4CAF50</color>
+    <color name="warning">#FFC107</color>
+    <color name="yellow">#FFC107</color>
+    <color name="error">#F44336</color>
+    <color name="red">#F44336</color>
+    <color name="info">#16A2F5</color>
+    <color name="orange">#FF9800</color>
+
+    <!-- Divider & Border -->
+    <color name="divider">#E0E0E0</color>
+    <color name="border">#E0E0E0</color>
+    <color name="border_light">#F5F5F5</color>
+
+    <!-- Button States -->
+    <color name="button_enabled">#16A2F5</color>
+    <color name="button_disabled">#BDBDBD</color>
+    <color name="button_pressed">#0D7DC4</color>
+
+    <!-- Card & Elevation -->
+    <color name="card_background">#FFFFFF</color>
+    <color name="elevation_overlay">#0D000000</color>
+
+    <!-- Drawer -->
+    <color name="drawer_background">#FFFFFF</color>
+    <color name="drawer_item_selected">#E3F2FD</color>
+    <color name="drawer_item_text">#000000</color>
+    <color name="drawer_item_icon">#757575</color>
+
+    <!-- Special Colors -->
+    <color name="scan_success">#4CAF50</color>
+    <color name="scan_warning">#FFC107</color>
+    <color name="scan_error">#F44336</color>
+</resources>
