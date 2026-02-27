@@ -63,6 +63,12 @@ class HeaderFragment : Fragment(R.layout.layout_header) {
         }
     }
 
+    fun updateConnectionStatus(isConnected: Boolean) {
+        if (_binding == null) return
+        val colorRes = if (isConnected) R.color.green else R.color.red
+        binding.connectionIndicator.setCardBackgroundColor(requireContext().getColor(colorRes))
+    }
+
     private fun setupButton() {
         binding.btnMenu.setOnClickListener {
             listener?.onMenuClicked()

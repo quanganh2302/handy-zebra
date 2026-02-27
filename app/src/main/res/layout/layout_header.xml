@@ -46,6 +46,17 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
 
+        <!-- ===== CONNECTION INDICATOR ===== -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/connectionIndicator"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:layout_marginEnd="16dp"
+            app:cardBackgroundColor="@color/red"
+            app:cardCornerRadius="6dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="0dp" />
+
         <!-- ===== EN ===== -->
         <LinearLayout
             android:id="@+id/showFlagEn"

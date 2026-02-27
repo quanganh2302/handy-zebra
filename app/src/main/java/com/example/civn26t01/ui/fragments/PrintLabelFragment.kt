@@ -341,6 +341,15 @@ class PrintLabelFragment: Fragment() {
     }
 
     private fun clearDataAndNavigateBack() {
+        // Gửi tín hiệu cho CreateMasterLabelFragment để clear form
+        parentFragmentManager.setFragmentResult(
+            BundleKeys.CLEAR_DATA_REQUEST,
+            Bundle().apply {
+                putBoolean(BundleKeys.SHOULD_CLEAR, true)
+            }
+        )
+
+        // Pop toàn bộ back stack → quay về CreateMasterLabelFragment
         parentFragmentManager.popBackStack(
             null,
             androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE
