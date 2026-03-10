@@ -6,6 +6,7 @@ object BundleKeys {
     const val EXTRA_QTY = "extra_qty"
     const val EXTRA_PACKING_TYPE = "extra_packing_type"
     const val EXTRA_WONO_COMPLETE = "extra_wono_complete"
+    const val EXTRA_PRINTER_NAME = "extra_printer_name"
 
     // Fragment Result Keys
     const val CLEAR_DATA_REQUEST = "clear_data_request"

@@ -22,7 +22,10 @@ data class ChiyodaInfo(
     val wonoComplete: Boolean = false,
 
     @SerializedName("listBox")
-    val listBox: List<Box>? = null
+    val listBox: List<Box>? = null,
+
+    @SerializedName("printer")
+    val printer: String? = null
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
@@ -31,7 +34,8 @@ data class ChiyodaInfo(
         entryDate = parcel.readString(),
         packingType = parcel.readInt(),
         wonoComplete = parcel.readByte().toInt() != 0,
-        listBox = parcel.createTypedArrayList(Box.CREATOR)
+        listBox = parcel.createTypedArrayList(Box.CREATOR),
+        printer = parcel.readString()
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -41,6 +45,7 @@ data class ChiyodaInfo(
         parcel.writeInt(packingType)
         parcel.writeByte(if (wonoComplete) 1 else 0)
         parcel.writeTypedList(listBox)
+        parcel.writeString(printer)
     }
 
     override fun describeContents(): Int = 0

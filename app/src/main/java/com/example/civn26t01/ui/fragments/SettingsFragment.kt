@@ -45,6 +45,12 @@ class SettingsFragment : Fragment() {
         binding.edtServerIp.setText(SettingsManager.getServerIp(requireContext()))
         binding.edtServerPort.setText(SettingsManager.getServerPort(requireContext()))
         binding.switchHttps.isChecked = SettingsManager.getUseHttps(requireContext())
+
+        // Load Printers
+        val printers = SettingsManager.getPrinters(requireContext())
+        if (printers.isNotEmpty()) binding.edtPrinter1.setText(printers[0])
+        if (printers.size > 1) binding.edtPrinter2.setText(printers[1])
+        if (printers.size > 2) binding.edtPrinter3.setText(printers[2])
     }
 
     private fun setupListeners() {
@@ -86,6 +92,10 @@ class SettingsFragment : Fragment() {
         val deviceName = binding.edtDeviceName.text?.toString()?.trim().orEmpty()
         val ip = binding.edtServerIp.text?.toString()?.trim().orEmpty()
         val port = binding.edtServerPort.text?.toString()?.trim().orEmpty()
+        
+        val printer1 = binding.edtPrinter1.text?.toString()?.trim().orEmpty()
+        val printer2 = binding.edtPrinter2.text?.toString()?.trim().orEmpty()
+        val printer3 = binding.edtPrinter3.text?.toString()?.trim().orEmpty()
 
         // Validation
         if (deviceName.isEmpty()) {
@@ -113,16 +123,25 @@ class SettingsFragment : Fragment() {
             return
         }
 
+        if (printer1.isEmpty() && printer2.isEmpty() && printer3.isEmpty()) {
+            ToastManager.warning(requireContext(), getString(R.string.error_printer_1_empty))
+            binding.edtPrinter1.requestFocus()
+            return
+        }
+
+        val printers = listOf(printer1, printer2, printer3).filter { it.isNotEmpty() }
+
         // Save settings
         SettingsManager.setDeviceName(requireContext(), deviceName)
         SettingsManager.setServerIp(requireContext(), ip)
         SettingsManager.setServerPort(requireContext(), port)
         SettingsManager.setUseHttps(requireContext(), binding.switchHttps.isChecked)
+        SettingsManager.setPrinters(requireContext(), printers)
 
         // Notify observers via LiveData
         SettingsLiveData.getInstance(requireContext()).refresh()
 
-        Log.d(TAG, "Settings saved: $deviceName, $ip:$port, HTTPS: ${binding.switchHttps.isChecked}")
+        Log.d(TAG, "Settings saved: $deviceName, $ip:$port, HTTPS: ${binding.switchHttps.isChecked}, Printers: $printers")
         ToastManager.success(requireContext(), getString(R.string.settings_saved_success))
 
         // Also send FragmentResult for backward compatibility
@@ -138,6 +157,12 @@ class SettingsFragment : Fragment() {
             .setMessage(R.string.reset_settings_message)
             .setPositiveButton(R.string.reset) { dialog, _ ->
                 SettingsManager.resetToDefaults(requireContext())
+        
+                // Reset Printers UI manually since resetToDefaults clears prefs but not UI immediately for printers
+                binding.edtPrinter1.setText("")
+                binding.edtPrinter2.setText("")
+                binding.edtPrinter3.setText("")
+                
                 loadCurrentSettings()
                 updateUrlPreview()
 

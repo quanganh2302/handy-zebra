@@ -38,6 +38,7 @@ class PrintLabelFragment: Fragment() {
     private var wono: String = ""
     private var entryDate: String = ""
     private var wonoComplete: Boolean = false
+    private var printer: String = ""
     private lateinit var packingAdapter: PackingAdapter
 
     override fun onCreateView(
@@ -61,13 +62,13 @@ class PrintLabelFragment: Fragment() {
         wono = arguments?.getString(BundleKeys.EXTRA_WONO, "").orEmpty()
         entryDate = arguments?.getString(BundleKeys.EXTRA_DATE, "").orEmpty()
         wonoComplete = arguments?.getBoolean(BundleKeys.EXTRA_WONO_COMPLETE, false) ?: false
+        printer = arguments?.getString(BundleKeys.EXTRA_PRINTER_NAME, "").orEmpty()
         binding.edtNumberOfCompleted.setText(qty.toString())
 
         setupRecyclerView()
         updateListTitle()
         setupButtons()
         setupKeyboardHandling()
-        testApiConnection()
     }
 
     // ================= KEYBOARD HANDLING =================
@@ -106,10 +107,10 @@ class PrintLabelFragment: Fragment() {
     }
 
     private fun updateListTitle() {
-        val totalBoxes = listBoxes.sumOf { it.count }
-        val totalProducts = listBoxes.sumOf { it.numberBox * it.count }
+        val totalBoxes = listBoxes.sumOf { it.boxCount }
+        val totalProducts = listBoxes.sumOf { it.countInBox * it.boxCount }
 
-        if (totalBoxes == 0L) {
+        if (totalBoxes == 0) {
             binding.tvListTitle.setText(R.string.list_boxes)
         } else {
             binding.tvListTitle.text =
@@ -131,14 +132,14 @@ class PrintLabelFragment: Fragment() {
         val productsPerBox = productPerBox.toIntOrNull() ?: 0
         if (productsPerBox <= 0) return
 
-        val boxCount = boxCountText.toLongOrNull()?.takeIf { it > 0 } ?: 1
-        val existingIndex = listBoxes.indexOfFirst { it.numberBox == productsPerBox }
+        val boxCount = boxCountText.toIntOrNull()?.takeIf { it > 0 } ?: 1
+        val existingIndex = listBoxes.indexOfFirst { it.countInBox == productsPerBox }
 
         if (existingIndex != -1) {
-            listBoxes[existingIndex].count += boxCount
+            listBoxes[existingIndex].boxCount += boxCount
             packingAdapter.notifyItemChanged(existingIndex)
         } else {
-            val newBox = Box(numberBox = productsPerBox, count = boxCount)
+            val newBox = Box(countInBox = productsPerBox, boxCount = boxCount)
             listBoxes.add(newBox)
             packingAdapter.notifyItemInserted(listBoxes.size - 1)
             binding.rvBoxes.smoothScrollToPosition(listBoxes.size - 1)
@@ -157,16 +158,19 @@ class PrintLabelFragment: Fragment() {
             return
         }
 
-        val packingQuantityText = binding.edtProductsPerBox.text.toString()
-        if (packingQuantityText.isEmpty()) {
-            ToastManager.warning(requireContext(), getString(R.string.enter_product_per_box))
-            return
-        }
+        val packingQuantityText = binding.edtProductsPerBox.text.toString().trim()
 
-        val packingQuantity = packingQuantityText.toIntOrNull()
-        if (packingQuantity == null || packingQuantity <= 0) {
-            ToastManager.warning(requireContext(), getString(R.string.toast_invalid_packing_quantity))
-            return
+        // Nếu không nhập số sp/thùng → mặc định gói tất cả vào 1 thùng
+        val packingQuantity = if (packingQuantityText.isEmpty()) {
+            Log.d(TAG, "handleAutoDistribute | no input → default 1 box with $completedCount items")
+            completedCount
+        } else {
+            val parsed = packingQuantityText.toIntOrNull()
+            if (parsed == null || parsed <= 0) {
+                ToastManager.warning(requireContext(), getString(R.string.toast_invalid_packing_quantity))
+                return
+            }
+            parsed
         }
 
         autoGenerateBoxes(completedCount, packingQuantity)
@@ -180,11 +184,11 @@ class PrintLabelFragment: Fragment() {
         val remainingItems = totalItems % itemsPerBox
 
         if (fullBoxes > 0) {
-            listBoxes.add(Box(numberBox = itemsPerBox, count = fullBoxes.toLong()))
+            listBoxes.add(Box(countInBox = itemsPerBox, boxCount = fullBoxes))
         }
 
         if (remainingItems > 0) {
-            listBoxes.add(Box(numberBox = remainingItems, count = 1))
+            listBoxes.add(Box(countInBox = remainingItems, boxCount = 1))
         }
 
         packingAdapter.notifyDataSetChanged()
@@ -216,6 +220,17 @@ class PrintLabelFragment: Fragment() {
 
         // 2. Prepare data
         val completedCount = binding.edtNumberOfCompleted.text.toString().toLongOrNull() ?: 0L
+
+        // Kiểm tra tổng sp trong thùng có khớp completedCount không
+        val totalInBoxes = listBoxes.sumOf { it.countInBox.toLong() * it.boxCount.toLong() }
+        if (totalInBoxes != completedCount) {
+            Log.w(TAG, "printLabels | MISMATCH: totalInBoxes=$totalInBoxes ≠ completedCount=$completedCount")
+            ToastManager.warning(
+                requireContext(),
+                getString(R.string.toast_boxes_total_mismatch, totalInBoxes, completedCount)
+            )
+            return
+        }
         val packingTypeCode = getPackingTypeCode(packingType)
 
         val chiyodaInfo = ChiyodaInfo(
@@ -224,7 +239,8 @@ class PrintLabelFragment: Fragment() {
             entryDate = entryDate,
             packingType = packingTypeCode,
             wonoComplete = wonoComplete,
-            listBox = listBoxes.toList()
+            listBox = listBoxes.toList(),
+            printer = printer
         )
 
         Log.d(TAG, "═══════════════════════════════════")
@@ -233,6 +249,7 @@ class PrintLabelFragment: Fragment() {
         Log.d(TAG, "Completed Count: ${chiyodaInfo.completedCount}")
         Log.d(TAG, "Entry Date: ${chiyodaInfo.entryDate}")
         Log.d(TAG, "Packing Type: ${chiyodaInfo.packingType}")
+        Log.d(TAG, "Printer: ${chiyodaInfo.printer}")
         Log.d(TAG, "Wono Status: ${chiyodaInfo.wonoComplete}")
         Log.d(TAG, "Total Boxes: ${listBoxes.size}")
         Log.d(TAG, "═══════════════════════════════════")
@@ -354,33 +371,6 @@ class PrintLabelFragment: Fragment() {
             null,
             androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE
         )
-    }
-    private fun testApiConnection() {
-        lifecycleScope.launch {
-            try {
-                // 1. Test status endpoint
-                val apiService = RetrofitClient.getApiService(requireContext())
-                val response = withContext(Dispatchers.IO) {
-                    apiService.getRpaStatus()
-                }
-
-                if (response.isSuccessful) {
-                    val status = response.body()
-                    Log.d(TAG, "✅ API Connected")
-                    Log.d(TAG, "Ready: ${status?.ready}")
-                    Log.d(TAG, "Buffered: ${status?.bufferedCount}")
-
-                    ToastManager.success(requireContext(), "API Connected!")
-                } else {
-                    Log.e(TAG, "❌ HTTP ${response.code()}")
-                    ToastManager.error(requireContext(), "HTTP ${response.code()}")
-                }
-
-            } catch (e: Exception) {
-                Log.e(TAG, "❌ Connection failed", e)
-                ToastManager.error(requireContext(), "Connection failed: ${e.message}")
-            }
-        }
     }
     private fun setupButtons() {
         binding.btnAdd.setOnClickListener { addBox() }

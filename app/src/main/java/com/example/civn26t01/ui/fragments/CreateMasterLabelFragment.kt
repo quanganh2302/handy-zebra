@@ -23,6 +23,8 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+import com.example.civn26t01.core.settings.SettingsManager
+import android.widget.ArrayAdapter
 
 class CreateMasterLabelFragment: Fragment(R.layout.fragment_create_master_label) {
     companion object {
@@ -64,6 +66,19 @@ class CreateMasterLabelFragment: Fragment(R.layout.fragment_create_master_label)
             if (bundle.getBoolean(BundleKeys.SHOULD_CLEAR, false)) {
                 clearAllInputFields()
             }
+        }
+        
+        setupPrinterDropdown()
+    }
+
+    private fun setupPrinterDropdown() {
+        val printers = SettingsManager.getPrinters(requireContext())
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, printers)
+        binding.tvPrinter.setAdapter(adapter)
+
+        // Select the first printer by default
+        if (printers.isNotEmpty()) {
+            binding.tvPrinter.setText(printers[0], false)
         }
     }
 
@@ -141,6 +156,12 @@ class CreateMasterLabelFragment: Fragment(R.layout.fragment_create_master_label)
             ToastManager.info(requireContext(), getString(R.string.error_date_empty))
             return
         }
+        
+        val selectedPrinter = binding.tvPrinter.text.toString()
+        if (selectedPrinter.isEmpty()) {
+            ToastManager.info(requireContext(), "Please select a printer") // Or add to strings.xml later if needed. Use generic for now.
+            return
+        }
 
         val localDate = runCatching {
             LocalDate.parse(
@@ -174,6 +195,7 @@ class CreateMasterLabelFragment: Fragment(R.layout.fragment_create_master_label)
                 putString(BundleKeys.EXTRA_WONO, master.wono)
                 putString(BundleKeys.EXTRA_DATE, master.date)
                 putInt(BundleKeys.EXTRA_QTY, master.qty)
+                putString(BundleKeys.EXTRA_PRINTER_NAME, binding.tvPrinter.text.toString())
             }
         }
 

@@ -14,6 +14,7 @@ import com.example.civn26t01.ui.utils.LanguageManager
 abstract class BaseActivity : AppCompatActivity(), HeaderFragment.HeaderListener, DrawerFragment.DrawerListener {
 
     protected lateinit var drawerNavigator: DrawerNavigator
+    private var isRecreating = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,6 +38,10 @@ abstract class BaseActivity : AppCompatActivity(), HeaderFragment.HeaderListener
     }
 
     override fun onLanguageChanged(lang: String) {
+        if (isRecreating) return  // Guard against spam clicks
+        val currentLang = LanguageManager.getLanguage(this)
+        if (currentLang == lang) return  // No change needed
+        isRecreating = true
         LanguageManager.setLanguage(this, lang)
         recreate()
     }

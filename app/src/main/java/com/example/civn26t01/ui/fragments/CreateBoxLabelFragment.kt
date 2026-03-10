@@ -92,8 +92,10 @@ class CreateBoxLabelFragment: Fragment() {
             binding.actvCategory.setAdapter(adapter)
 
             if (packingTypes.isNotEmpty()) {
-                binding.actvCategory.setText(packingTypes[0], false)
-                selectedPackingType = packingTypes[0]
+                val defaultIndex = 3 // "Kiện"
+                val safeIndex = if (defaultIndex < packingTypes.size) defaultIndex else 0
+                binding.actvCategory.setText(packingTypes[safeIndex], false)
+                selectedPackingType = packingTypes[safeIndex]
             }
         }
 
@@ -123,12 +125,14 @@ class CreateBoxLabelFragment: Fragment() {
     }
 
     private fun createBoxLabel() {
+        val printerName = arguments?.getString(BundleKeys.EXTRA_PRINTER_NAME).orEmpty()
         val bundle = Bundle().apply {
             putString(BundleKeys.EXTRA_WONO, masterLabel?.wono)
             putString(BundleKeys.EXTRA_DATE, masterLabel?.date)
             putInt(BundleKeys.EXTRA_QTY, masterLabel?.qty ?: 0)
             putString(BundleKeys.EXTRA_PACKING_TYPE, selectedPackingType)
             putBoolean(BundleKeys.EXTRA_WONO_COMPLETE, wonoComplete)
+            putString(BundleKeys.EXTRA_PRINTER_NAME, printerName)
         }
 
         val fragment = PrintLabelFragment()

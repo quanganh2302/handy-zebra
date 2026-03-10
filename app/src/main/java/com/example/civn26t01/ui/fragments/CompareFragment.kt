@@ -195,10 +195,21 @@ class CompareFragment: Fragment() {
         }
 
         val totalQuan = scannedLabels.sumOf { it.quantity ?: 0 }
+
+        // ── DEBUG LOG ──────────────────────────────────────────────────────────
+        Log.d(TAG, "compareLabels | scannedLabels.size=${scannedLabels.size}")
+        scannedLabels.forEachIndexed { i, label ->
+            Log.d(TAG, "  [$i] number=${label.number}, quantity=${label.quantity}")
+        }
+        Log.d(TAG, "compareLabels | totalQuan=$totalQuan | masterLabel.qty=${masterLabel?.qty}")
+        // ──────────────────────────────────────────────────────────────────────
+
         if (totalQuan == masterLabel?.qty) {
+            Log.d(TAG, "compareLabels | RESULT: MATCH ✓")
             ToastManager.success(requireContext(), getString(R.string.compare_success))
             showSuccessDialogWithOptions()
         } else {
+            Log.d(TAG, "compareLabels | RESULT: MISMATCH ✗ (totalQuan=$totalQuan ≠ masterQty=${masterLabel?.qty})")
             ToastManager.warning(requireContext(), getString(R.string.error_qty_invalid))
             playWarningSound()
         }
@@ -227,11 +238,13 @@ class CompareFragment: Fragment() {
         dialog.show()
     }
     private fun navigateToCreateBoxLabel() {
+        val printerName = arguments?.getString(BundleKeys.EXTRA_PRINTER_NAME).orEmpty()
         val bundle = Bundle().apply {
             putString(BundleKeys.EXTRA_WONO, masterLabel?.wono)
             putString(BundleKeys.EXTRA_DATE, masterLabel?.date)
             putInt(BundleKeys.EXTRA_QTY, masterLabel?.qty ?: 0)
             putBoolean(BundleKeys.EXTRA_WONO_COMPLETE, false)
+            putString(BundleKeys.EXTRA_PRINTER_NAME, printerName)
         }
 
         val fragment = CreateBoxLabelFragment().apply {

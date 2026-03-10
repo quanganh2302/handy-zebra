@@ -13,5 +13,8 @@ data class ProcessResultDto(
     val message: String? = null,
 
     @SerializedName("error")
-    val error: String? = null
+    val error: String? = null,
+
+    @SerializedName("popupTitle")
+    val popupTitle: String? = null
 )

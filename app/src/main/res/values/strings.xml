@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">civn26t01</string>
+    <string name="app_name">Chiyoda-PD</string>
     <string name="lang_en">EN</string>
     <string name="lang_vi">VI</string>
 
@@ -29,7 +29,7 @@
     <string name="error_date_invalid">Enter a valid date </string>
     <!-- Log create master label -->
     <string name="error_date_empty">Please select a date</string>
-    <string name="error_qty_invalid">Quantity must be greater than 0</string>
+    <string name="error_qty_invalid">Total quantity does not match master label</string>
     <string name="unexpected_error">An error occurred. Please try again</string>
 
     <string name="compare_success">Compare success</string>
@@ -56,11 +56,11 @@
     // Create box label
     <string name="create_box_label" >Create box label </string>
     <string name="category">Category</string>
-    <string name="packing_type_1">Carton Box</string>
-    <string name="packing_type_2">Package</string>
-    <string name="packing_type_3">Plastic Bag</string>
-    <string name="packing_type_4">Paper Pack</string>
-    <string name="packing_type_5">Others</string>
+    <string name="packing_type_1">Khác</string>
+    <string name="packing_type_2">Hộp bìa</string>
+    <string name="packing_type_3">Gói giấy</string>
+    <string name="packing_type_4">Kiện</string>
+    <string name="packing_type_5">Bao nilon</string>
     <string name="completed">Completed</string>
     <string name="continue_tt">Continue</string>
 
@@ -82,6 +82,7 @@
     <string name="toast_boxes_created_with_remaining">Created %1$d full %2$s (%3$d items each) + 1 box with %4$d items</string>
     <string name="toast_boxes_created_full">Created %1$d %2$s with %3$d items each</string>
     <string name="toast_no_boxes">No boxes to print</string>
+    <string name="toast_boxes_total_mismatch">Total in boxes (%1$d) does not match completed count (%2$d)</string>
 
     <string name="signalr_submit_success_title">Submitted Successfully!</string>
     <string name="signalr_submit_success_message">Estimated Start Time: %4$s</string>
@@ -105,12 +106,12 @@
     <!-- Settings -->
     <string name="settings_title">Settings</string>
     <string name="device_name">Device Name</string>
-    <string name="device_name_hint">e.g. civn26t01, Device-001</string>
+    <string name="device_name_hint">e.g. Device-001</string>
     <string name="server_configuration">Server Configuration</string>
     <string name="server_ip">Server IP Address</string>
-    <string name="server_ip_hint">e.g. 192.168.103.30</string>
+    <string name="server_ip_hint">e.g. 192.168.50.29</string>
     <string name="server_port">Server Port</string>
-    <string name="server_port_hint">e.g. 8080</string>
+    <string name="server_port_hint">e.g. 5000</string>
     <string name="use_https">Use HTTPS</string>
     <string name="current_base_url">Current Base URL:</string>
     <string name="please_enter_ip_port">Please enter IP and Port</string>
@@ -128,6 +129,12 @@
     <string name="error_port_invalid">Port must be between 1 and 65535</string>
     <string name="settings_saved_success">Settings saved successfully</string>
     <string name="settings_reset_success">Settings reset to defaults</string>
+    <string name="printer_configuration">Printer Configuration</string>
+    <string name="printer_1">Printer 1 (Required)</string>
+    <string name="printer_2">Printer 2 (Optional)</string>
+    <string name="printer_3">Printer 3 (Optional)</string>
+    <string name="error_printer_1_empty">Please enter at least Printer 1</string>
+    <string name="printer">Printer</string>
 
     <!-- API Messages -->
     <string name="print_success">Task submitted successfully</string>

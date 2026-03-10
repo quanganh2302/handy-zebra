@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">civn26t01</string>
+    <string name="app_name">Chiyoda-PD</string>
     <string name="lang_en">EN</string>
     <string name="lang_vi">VI</string>
 
@@ -31,7 +31,7 @@
 
     // Log create master label
     <string name="error_date_empty">Vui lòng chọn ngày</string>
-    <string name="error_qty_invalid">Số lượng phải lớn hơn 0</string>
+    <string name="error_qty_invalid">Tổng số lượng không khớp với master label</string>
     <string name="unexpected_error">Đã xảy ra lỗi, vui lòng thử lại</string>
 
     <string name="compare_success">So sánh thành công</string>
@@ -57,11 +57,11 @@
     // Create box label
     <string name="create_box_label" translatable="false" > Tạo nhãn thùng </string>
     <string name="category" translatable="false" > Chọn kiểu </string>
-    <string name="packing_type_1" translatable="false" > Hộp bìa </string>
-    <string name="packing_type_2" translatable="false" > Kiện </string>
-    <string name="packing_type_3" translatable="false" > Bao ni-lon </string>
-    <string name="packing_type_4" translatable="false" > Gói giấy </string>
-    <string name="packing_type_5" translatable="false" > Khác </string>
+    <string name="packing_type_1" translatable="false" > Khác </string>
+    <string name="packing_type_2" translatable="false" > Hộp bìa </string>
+    <string name="packing_type_3" translatable="false" > Gói giấy </string>
+    <string name="packing_type_4" translatable="false" > Kiện </string>
+    <string name="packing_type_5" translatable="false" > Bao nilon </string>
     <string name="completed" translatable="false" > Hoàn thành </string>
     <string name="continue_tt" translatable="false" > Tiếp tục </string>
 
@@ -83,6 +83,7 @@
     <string name="toast_boxes_created_with_remaining" translatable="false">Đã tạo %1$d %2$s đầy (%3$d sản phẩm mỗi thùng) + 1 thùng với %4$d sản phẩm</string>
     <string name="toast_boxes_created_full" translatable="false">Đã tạo %1$d %2$s với %3$d sản phẩm mỗi thùng</string>
     <string name="toast_no_boxes" translatable="false">Không có thùng để in</string>
+    <string name="toast_boxes_total_mismatch">Tổng sp trong thùng (%1$d) không khớp với số lượng hoàn thành (%2$d)</string>
 
     <!-- SignalR Submit Response Messages -->
     <string name="signalr_submit_success_title" translatable="false">Gửi thành công!</string>
@@ -107,12 +108,12 @@
     <!-- Settings -->
     <string name="settings_title">Cài Đặt</string>
     <string name="device_name">Tên Thiết Bị</string>
-    <string name="device_name_hint">vd. civn26t01, Thiết-Bị-001</string>
+    <string name="device_name_hint">vd. Thiết-Bị-001</string>
     <string name="server_configuration">Cấu Hình Máy Chủ</string>
     <string name="server_ip">Địa Chỉ IP Máy Chủ</string>
-    <string name="server_ip_hint">vd. 192.168.103.30</string>
+    <string name="server_ip_hint">vd. 192.168.50.29</string>
     <string name="server_port">Cổng Máy Chủ</string>
-    <string name="server_port_hint">vd. 8080</string>
+    <string name="server_port_hint">vd. 5000</string>
     <string name="use_https">Sử Dụng HTTPS</string>
     <string name="current_base_url">URL Hiện Tại:</string>
     <string name="please_enter_ip_port">Vui lòng nhập IP và Cổng</string>
@@ -130,18 +131,24 @@
     <string name="error_port_invalid">Cổng phải nằm trong khoảng 1 đến 65535</string>
     <string name="settings_saved_success">Lưu cài đặt thành công</string>
     <string name="settings_reset_success">Đã khôi phục về cài đặt mặc định</string>
+    <string name="printer_configuration">Cấu Hình Máy In</string>
+    <string name="printer_1">Máy In 1 (Bắt buộc)</string>
+    <string name="printer_2">Máy In 2 (Tùy chọn)</string>
+    <string name="printer_3">Máy In 3 (Tùy chọn)</string>
+    <string name="error_printer_1_empty">Vui lòng nhập ít nhất Máy In 1</string>
+    <string name="printer">Máy In</string>
     <!-- API Messages -->
-    <string name="print_success">Task submitted successfully</string>
-    <string name="print_failed">Failed to submit task</string>
-    <string name="processing">Processing...</string>
-    <string name="task_submitted_message">Task submitted!\nJob ID: %1$s</string>
+    <string name="print_success">Gửi tác vụ thành công</string>
+    <string name="print_failed">Gửi tác vụ thất bại</string>
+    <string name="processing">Đang xử lý...</string>
+    <string name="task_submitted_message">Tác vụ đã được gửi!\nMã Job: %1$s</string>
 
     <!-- Errors -->
-    <string name="error_network">Network error. Please check your connection.</string>
-    <string name="error_bad_request">Invalid request data</string>
-    <string name="error_system_paused">RPA system is currently paused</string>
-    <string name="error_server">Server error: %1$d</string>
-    <string name="error_unexpected">Unexpected error: %1$s</string>
+    <string name="error_network">Lỗi mạng. Vui lòng kiểm tra kết nối.</string>
+    <string name="error_bad_request">Dữ liệu yêu cầu không hợp lệ</string>
+    <string name="error_system_paused">Hệ thống RPA hiện đang tạm dừng</string>
+    <string name="error_server">Lỗi máy chủ: %1$d</string>
+    <string name="error_unexpected">Lỗi không xác định: %1$s</string>
     <string name="ok">OK</string>
 
 </resources>

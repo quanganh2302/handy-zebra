@@ -53,6 +53,70 @@
                 android:maxLength="50" />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- Printers Section -->
+        <TextView
+            android:id="@+id/tvPrinterConfigTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="@string/printer_configuration"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tilDeviceName" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilPrinter1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="@string/printer_1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvPrinterConfigTitle">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edtPrinter1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textNoSuggestions" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilPrinter2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="@string/printer_2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tilPrinter1">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edtPrinter2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textNoSuggestions" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilPrinter3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="@string/printer_3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tilPrinter2">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edtPrinter3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textNoSuggestions" />
+        </com.google.android.material.textfield.TextInputLayout>
+
         <!-- Divider -->
         <View
             android:id="@+id/divider1"
@@ -62,7 +126,7 @@
             android:background="?android:attr/listDivider"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tilDeviceName" />
+            app:layout_constraintTop_toBottomOf="@id/tilPrinter3" />
 
         <!-- Server Configuration Title -->
         <TextView

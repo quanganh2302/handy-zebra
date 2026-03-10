@@ -26,8 +26,8 @@ class PackingAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
 
-        holder.binding.etProductPerBox.setText(item.numberBox.toString())
-        holder.binding.etBoxCount.setText(item.count.toString())
+        holder.binding.etProductPerBox.setText(item.countInBox.toString())
+        holder.binding.etBoxCount.setText(item.boxCount.toString())
 
         holder.binding.btnDelete.setOnClickListener {
             onDelete(position)

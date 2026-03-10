@@ -22,5 +22,5 @@ interface RpaApiService {
 data class RpaStatusDto(
     val ready: Boolean,
     val bufferedCount: Int,
-    val timestamp: String
+    val timestamp: String? = null
 )

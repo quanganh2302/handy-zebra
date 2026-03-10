@@ -5,21 +5,26 @@ import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 
 data class Box(
-    @SerializedName("numberBox")
-    var numberBox: Int = 0,
+    @SerializedName("id")
+    var id: Int = 0,
 
-    @SerializedName("count")
-    var count: Long = 0
+    @SerializedName("countInBox")
+    var countInBox: Int = 0,
+
+    @SerializedName("boxCount")
+    var boxCount: Int = 0
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
-        numberBox = parcel.readInt(),
-        count = parcel.readLong()
+        id = parcel.readInt(),
+        countInBox = parcel.readInt(),
+        boxCount = parcel.readInt()
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeInt(numberBox)
-        parcel.writeLong(count)
+        parcel.writeInt(id)
+        parcel.writeInt(countInBox)
+        parcel.writeInt(boxCount)
     }
 
     override fun describeContents(): Int = 0
