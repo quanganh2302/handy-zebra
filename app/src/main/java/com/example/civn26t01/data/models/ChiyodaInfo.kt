@@ -10,7 +10,7 @@ data class ChiyodaInfo(
     val wono: String = "",
 
     @SerializedName("completedCount")
-    val completedCount: Long = 0L,
+    val completedCount: Double = 0.0, // Changed from Long to Double to support decimal values
 
     @SerializedName("entryDate")
     val entryDate: String? = null,
@@ -30,7 +30,7 @@ data class ChiyodaInfo(
 
     constructor(parcel: Parcel) : this(
         wono = parcel.readString() ?: "",
-        completedCount = parcel.readLong(),
+        completedCount = parcel.readDouble(), // Changed to readDouble()
         entryDate = parcel.readString(),
         packingType = parcel.readInt(),
         wonoComplete = parcel.readByte().toInt() != 0,
@@ -40,7 +40,7 @@ data class ChiyodaInfo(
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(wono)
-        parcel.writeLong(completedCount)
+        parcel.writeDouble(completedCount) // Changed to writeDouble()
         parcel.writeString(entryDate)
         parcel.writeInt(packingType)
         parcel.writeByte(if (wonoComplete) 1 else 0)

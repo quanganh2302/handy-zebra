@@ -136,7 +136,7 @@ class CompareFragment: Fragment() {
         masterLabel = MasterLabelData(
             wono = arguments?.getString(BundleKeys.EXTRA_WONO).orEmpty(),
             date = isoDate,
-            qty = arguments?.getInt(BundleKeys.EXTRA_QTY) ?: 0
+            qty = arguments?.getDouble(BundleKeys.EXTRA_QTY) ?: 0.0 // Changed from getInt to getDouble
         )
     }
     private fun binMasterLabel(data: MasterLabelData)= with(binding){
@@ -172,11 +172,13 @@ class CompareFragment: Fragment() {
     }
 
     private fun addItemToList(label: PackingLabel) {
-        val duplicated = scannedLabels.any {
-            it.number == label.number && it.number != null
+        val existingLabel = scannedLabels.firstOrNull {
+            it.number == label.number && it.number != null  && it.time == label.time
         }
 
-        if (duplicated) {
+        if (existingLabel != null) {
+            Log.w(TAG, "DUPLICATE_DETECTED | incoming: number=${label.number}, qty=${label.quantity}, time=${label.time}")
+            Log.w(TAG, "DUPLICATE_DETECTED | matched:  number=${existingLabel.number}, qty=${existingLabel.quantity}, time=${existingLabel.time}")
             ToastManager.info(requireContext(), getString(R.string.label_already_scanned))
             return
         }
@@ -194,22 +196,27 @@ class CompareFragment: Fragment() {
             return
         }
 
-        val totalQuan = scannedLabels.sumOf { it.quantity ?: 0 }
+        val totalQuan = scannedLabels
+            .map { it.quantity.toBigDecimal().setScale(2, java.math.RoundingMode.HALF_UP) }
+            .fold(java.math.BigDecimal.ZERO) { acc, qty -> acc + qty }
+
+        val rawTotal = scannedLabels.sumOf { it.quantity } // for debug log only
+        val roundedMaster = (masterLabel?.qty ?: 0.0).toBigDecimal().setScale(2, java.math.RoundingMode.HALF_UP)
 
         // ── DEBUG LOG ──────────────────────────────────────────────────────────
         Log.d(TAG, "compareLabels | scannedLabels.size=${scannedLabels.size}")
         scannedLabels.forEachIndexed { i, label ->
             Log.d(TAG, "  [$i] number=${label.number}, quantity=${label.quantity}")
         }
-        Log.d(TAG, "compareLabels | totalQuan=$totalQuan | masterLabel.qty=${masterLabel?.qty}")
+        Log.d(TAG, "compareLabels | rawTotal=$rawTotal | roundedTotal=$totalQuan | masterLabel.qty=${masterLabel?.qty} → $roundedMaster")
         // ──────────────────────────────────────────────────────────────────────
 
-        if (totalQuan == masterLabel?.qty) {
-            Log.d(TAG, "compareLabels | RESULT: MATCH ✓")
+        if (totalQuan == roundedMaster) {
+            Log.d(TAG, "compareLabels | RESULT: MATCH ✓ ($totalQuan == $roundedMaster)")
             ToastManager.success(requireContext(), getString(R.string.compare_success))
             showSuccessDialogWithOptions()
         } else {
-            Log.d(TAG, "compareLabels | RESULT: MISMATCH ✗ (totalQuan=$totalQuan ≠ masterQty=${masterLabel?.qty})")
+            Log.d(TAG, "compareLabels | RESULT: MISMATCH ✗ (totalQuan=$totalQuan ≠ masterQty=$roundedMaster)")
             ToastManager.warning(requireContext(), getString(R.string.error_qty_invalid))
             playWarningSound()
         }
@@ -242,7 +249,7 @@ class CompareFragment: Fragment() {
         val bundle = Bundle().apply {
             putString(BundleKeys.EXTRA_WONO, masterLabel?.wono)
             putString(BundleKeys.EXTRA_DATE, masterLabel?.date)
-            putInt(BundleKeys.EXTRA_QTY, masterLabel?.qty ?: 0)
+            putDouble(BundleKeys.EXTRA_QTY, masterLabel?.qty ?: 0.0) // Changed from putInt to putDouble
             putBoolean(BundleKeys.EXTRA_WONO_COMPLETE, false)
             putString(BundleKeys.EXTRA_PRINTER_NAME, printerName)
         }

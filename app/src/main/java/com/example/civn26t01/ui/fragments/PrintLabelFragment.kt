@@ -23,6 +23,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import java.io.IOException
+import kotlin.math.abs
 
 class PrintLabelFragment: Fragment() {
     companion object {
@@ -33,7 +34,7 @@ class PrintLabelFragment: Fragment() {
     private val binding get() = _binding!!
 
     private val listBoxes = mutableListOf<Box>()
-    private var qty: Int = 0
+    private var qty: Double = 0.0 // Changed from Int to Double to support decimal quantities
     private var packingType: String = ""
     private var wono: String = ""
     private var entryDate: String = ""
@@ -57,7 +58,7 @@ class PrintLabelFragment: Fragment() {
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
 
         // Get arguments
-        qty = arguments?.getInt(BundleKeys.EXTRA_QTY) ?: 0
+        qty = arguments?.getDouble(BundleKeys.EXTRA_QTY) ?: 0.0 // Changed from getInt to getDouble
         packingType = arguments?.getString(BundleKeys.EXTRA_PACKING_TYPE, "").orEmpty()
         wono = arguments?.getString(BundleKeys.EXTRA_WONO, "").orEmpty()
         entryDate = arguments?.getString(BundleKeys.EXTRA_DATE, "").orEmpty()
@@ -108,14 +109,18 @@ class PrintLabelFragment: Fragment() {
 
     private fun updateListTitle() {
         val totalBoxes = listBoxes.sumOf { it.boxCount }
-        val totalProducts = listBoxes.sumOf { it.countInBox * it.boxCount }
+        val totalProducts = listBoxes.sumOf { it.countInBox * it.boxCount } // Now summing Doubles correctly
 
         if (totalBoxes == 0) {
             binding.tvListTitle.setText(R.string.list_boxes)
         } else {
-            binding.tvListTitle.text =
-                getString(R.string.list_boxes) +
-                        " $totalBoxes $packingType ($totalProducts ${getString(R.string.product)})"
+            binding.tvListTitle.text = getString(
+                R.string.list_boxes_format,
+                totalBoxes,
+                packingType,
+                totalProducts,
+                getString(R.string.product)
+            )
         }
     }
 
@@ -129,11 +134,11 @@ class PrintLabelFragment: Fragment() {
             return
         }
 
-        val productsPerBox = productPerBox.toIntOrNull() ?: 0
-        if (productsPerBox <= 0) return
+        val productsPerBox = productPerBox.toDoubleOrNull() ?: 0.0 // Changed from toIntOrNull to toDoubleOrNull
+        if (productsPerBox <= 0.0) return
 
         val boxCount = boxCountText.toIntOrNull()?.takeIf { it > 0 } ?: 1
-        val existingIndex = listBoxes.indexOfFirst { it.countInBox == productsPerBox }
+        val existingIndex = listBoxes.indexOfFirst { abs(it.countInBox - productsPerBox) < 0.0001 } // Added tolerance check for Double comparison
 
         if (existingIndex != -1) {
             listBoxes[existingIndex].boxCount += boxCount
@@ -152,8 +157,8 @@ class PrintLabelFragment: Fragment() {
 
     // ================= HANDLE AUTO DISTRIBUTE =================
     private fun handleAutoDistribute() {
-        val completedCount = binding.edtNumberOfCompleted.text.toString().toIntOrNull() ?: 0
-        if (completedCount <= 0) {
+        val completedCount = binding.edtNumberOfCompleted.text.toString().toDoubleOrNull() ?: 0.0 // Changed from toIntOrNull to toDoubleOrNull
+        if (completedCount <= 0.0) {
             ToastManager.warning(requireContext(), getString(R.string.toast_invalid_completed_count))
             return
         }
@@ -165,8 +170,8 @@ class PrintLabelFragment: Fragment() {
             Log.d(TAG, "handleAutoDistribute | no input → default 1 box with $completedCount items")
             completedCount
         } else {
-            val parsed = packingQuantityText.toIntOrNull()
-            if (parsed == null || parsed <= 0) {
+            val parsed = packingQuantityText.toDoubleOrNull() // Changed from toIntOrNull to toDoubleOrNull
+            if (parsed == null || parsed <= 0.0) {
                 ToastManager.warning(requireContext(), getString(R.string.toast_invalid_packing_quantity))
                 return
             }
@@ -177,17 +182,18 @@ class PrintLabelFragment: Fragment() {
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private fun autoGenerateBoxes(totalItems: Int, itemsPerBox: Int) {
+    private fun autoGenerateBoxes(totalItems: Double, itemsPerBox: Double) { // Changed parameters to Double
         listBoxes.clear()
 
-        val fullBoxes = totalItems / itemsPerBox
+        val fullBoxes = (totalItems / itemsPerBox).toInt() // Calculate integer part of boxes
         val remainingItems = totalItems % itemsPerBox
 
         if (fullBoxes > 0) {
             listBoxes.add(Box(countInBox = itemsPerBox, boxCount = fullBoxes))
         }
 
-        if (remainingItems > 0) {
+        // Use tolerance for remaining items check
+        if (remainingItems > 0.0001) {
             listBoxes.add(Box(countInBox = remainingItems, boxCount = 1))
         }
 
@@ -201,7 +207,7 @@ class PrintLabelFragment: Fragment() {
         binding.edtProductsPerBox.text?.clear()
         binding.etBoxCount.text?.clear()
 
-        val message = if (remainingItems > 0) {
+        val message = if (remainingItems > 0.0001) {
             getString(R.string.toast_boxes_created_with_remaining, fullBoxes, packingType, itemsPerBox, remainingItems)
         } else {
             getString(R.string.toast_boxes_created_full, fullBoxes, packingType, itemsPerBox)
@@ -219,11 +225,13 @@ class PrintLabelFragment: Fragment() {
         }
 
         // 2. Prepare data
-        val completedCount = binding.edtNumberOfCompleted.text.toString().toLongOrNull() ?: 0L
+        val completedCount = binding.edtNumberOfCompleted.text.toString().toDoubleOrNull() ?: 0.0 // Changed from toLongOrNull to toDoubleOrNull
 
         // Kiểm tra tổng sp trong thùng có khớp completedCount không
-        val totalInBoxes = listBoxes.sumOf { it.countInBox.toLong() * it.boxCount.toLong() }
-        if (totalInBoxes != completedCount) {
+        val totalInBoxes = listBoxes.sumOf { it.countInBox * it.boxCount.toDouble() } // Calculations in Double
+        
+        // Use tolerance check for equality
+        if (abs(totalInBoxes - completedCount) > 0.0001) {
             Log.w(TAG, "printLabels | MISMATCH: totalInBoxes=$totalInBoxes ≠ completedCount=$completedCount")
             ToastManager.warning(
                 requireContext(),
@@ -380,6 +388,7 @@ class PrintLabelFragment: Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        @Suppress("DEPRECATION")
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
         _binding = null
     }

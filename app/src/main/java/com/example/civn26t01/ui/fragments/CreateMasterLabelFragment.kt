@@ -61,7 +61,7 @@ class CreateMasterLabelFragment: Fragment(R.layout.fragment_create_master_label)
 
         parentFragmentManager.setFragmentResultListener(
             BundleKeys.CLEAR_DATA_REQUEST,
-            viewLifecycleOwner
+            this // Use fragment directly instead of viewLifecycleOwner for better persistence
         ) { _, bundle ->
             if (bundle.getBoolean(BundleKeys.SHOULD_CLEAR, false)) {
                 clearAllInputFields()
@@ -146,8 +146,8 @@ class CreateMasterLabelFragment: Fragment(R.layout.fragment_create_master_label)
             return
         }
 
-        val qty = qtyText.toIntOrNull()
-        if (qty == null || qty <= 0) {
+        val qty = qtyText.toDoubleOrNull() // Changed from toIntOrNull to toDoubleOrNull
+        if (qty == null || qty <= 0.0) { // Changed comparison to Double
             ToastManager.info(requireContext(), getString(R.string.error_qty_invalid))
             return
         }
@@ -194,7 +194,7 @@ class CreateMasterLabelFragment: Fragment(R.layout.fragment_create_master_label)
             arguments = Bundle().apply {
                 putString(BundleKeys.EXTRA_WONO, master.wono)
                 putString(BundleKeys.EXTRA_DATE, master.date)
-                putInt(BundleKeys.EXTRA_QTY, master.qty)
+                putDouble(BundleKeys.EXTRA_QTY, master.qty) // Changed from putInt to putDouble
                 putString(BundleKeys.EXTRA_PRINTER_NAME, binding.tvPrinter.text.toString())
             }
         }
@@ -211,6 +211,8 @@ class CreateMasterLabelFragment: Fragment(R.layout.fragment_create_master_label)
         binding.edtWoNo.setText("")
         binding.edtQty.setText("")
         dateInputView.clearDate()
+        // Clear cached arguments to prevent re-populating on view restoration
+        arguments?.clear()
     }
 
     private fun sanitizeScanData(data: String): String {

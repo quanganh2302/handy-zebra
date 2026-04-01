@@ -50,7 +50,7 @@ class CreateBoxLabelFragment: Fragment() {
         masterLabel = MasterLabelData(
             wono = arguments?.getString(BundleKeys.EXTRA_WONO).orEmpty(),
             date = isoDate,
-            qty = arguments?.getInt(BundleKeys.EXTRA_QTY) ?: 0
+            qty = arguments?.getDouble(BundleKeys.EXTRA_QTY) ?: 0.0
         )
     }
 
@@ -129,7 +129,7 @@ class CreateBoxLabelFragment: Fragment() {
         val bundle = Bundle().apply {
             putString(BundleKeys.EXTRA_WONO, masterLabel?.wono)
             putString(BundleKeys.EXTRA_DATE, masterLabel?.date)
-            putInt(BundleKeys.EXTRA_QTY, masterLabel?.qty ?: 0)
+            putDouble(BundleKeys.EXTRA_QTY, masterLabel?.qty ?: 0.0) // Changed from putInt to putDouble
             putString(BundleKeys.EXTRA_PACKING_TYPE, selectedPackingType)
             putBoolean(BundleKeys.EXTRA_WONO_COMPLETE, wonoComplete)
             putString(BundleKeys.EXTRA_PRINTER_NAME, printerName)

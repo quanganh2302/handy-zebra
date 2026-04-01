@@ -9,7 +9,7 @@ data class Box(
     var id: Int = 0,
 
     @SerializedName("countInBox")
-    var countInBox: Int = 0,
+    var countInBox: Double = 0.0, // Changed from Int to Double
 
     @SerializedName("boxCount")
     var boxCount: Int = 0
@@ -17,13 +17,13 @@ data class Box(
 
     constructor(parcel: Parcel) : this(
         id = parcel.readInt(),
-        countInBox = parcel.readInt(),
+        countInBox = parcel.readDouble(), // Changed to readDouble()
         boxCount = parcel.readInt()
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(id)
-        parcel.writeInt(countInBox)
+        parcel.writeDouble(countInBox) // Changed to writeDouble()
         parcel.writeInt(boxCount)
     }
 
